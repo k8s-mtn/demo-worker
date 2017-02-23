@@ -25,8 +25,6 @@ func main() {
 	}
 
 	ctx := context.Background()
-	ctx, done := context.WithTimeout(ctx, time.Second*10)
-	defer done()
 
 	quit(ctx, q)
 }
@@ -37,6 +35,9 @@ func quit(ctx context.Context, fs ...func(context.Context) error) {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	<-sigChan
+
+	ctx, done := context.WithTimeout(ctx, time.Second*10)
+	defer done()
 
 	wg := sync.WaitGroup{}
 
