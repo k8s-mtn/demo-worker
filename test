@@ -4,13 +4,11 @@ rm resized.png
 set -e
 
 curl -v --fail \
-  -F "x=100" \
-  -F "y=100" \
-  -F "filecomment=This is an image file" \
-  -F "photo=@Lenna.png" \
-  localhost:8000/resize \
-  -o resized.png
-
+  -X post \
+  --data-binary "@Lenna.png" \
+  -o resized.png \
+  "http://localhost:8000/resize?x=100&y=100"
+  
 open Lenna.png
 
 open resized.png

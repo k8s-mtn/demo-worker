@@ -39,40 +39,27 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func resizeHandler(w http.ResponseWriter, r *http.Request) {
+
 	log.Println("Received resize request")
 	defer log.Println("Done with resize request")
 
-	err := r.ParseMultipartForm(32 << 20)
-	if err != nil {
-		http.Error(w, "unable to parse form: "+err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	p := r.MultipartForm.File["photo"]
-	if len(p) != 1 {
-		http.Error(w, "one photo upload is required", http.StatusBadRequest)
-		return
-	}
-
-	f, err := p[0].Open()
-	if err != nil {
-		http.Error(w, "unable open uploaded file: "+err.Error(), http.StatusBadRequest)
-		return
-	}
+	r.ParseForm()
 
 	maxX, err := strconv.Atoi(r.Form.Get("x"))
 	if err != nil {
+		log.Println("invalid x value")
 		http.Error(w, "invalid x value", http.StatusBadRequest)
 		return
 	}
 
 	maxY, err := strconv.Atoi(r.Form.Get("y"))
 	if err != nil {
+		log.Println("invalid y value")
 		http.Error(w, "invalid y value", http.StatusBadRequest)
 		return
 	}
 
-	new, err := resizeImage(f, maxX, maxY)
+	new, err := resizeImage(r.Body, maxX, maxY)
 	if err != nil {
 		log.Printf("unable to send resized image to client: %s\n", err)
 		http.Error(w, "unable to resize image: "+err.Error(), http.StatusInternalServerError)
