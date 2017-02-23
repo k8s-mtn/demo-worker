@@ -1,0 +1,16 @@
+
+rm resized.png
+
+set -e
+
+open Lenna.png
+
+curl -v \
+  -F "x=100" \
+  -F "y=100" \
+  -F "filecomment=This is an image file" \
+  -F "photo=@Lenna.png" \
+  localhost:8000/resize \
+  -o resized.png
+
+open resized.png
