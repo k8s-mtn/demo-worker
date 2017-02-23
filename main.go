@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	addr := os.Getenv("addr")
+	addr := os.Getenv("ADDR")
 	if addr == "" {
 		addr = ":8000"
 	}

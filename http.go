@@ -12,6 +12,7 @@ func serve(addr string) (func(context.Context) error, error) {
 
 	http.HandleFunc("/resize", resizeHandler)
 	http.HandleFunc("/ping", pingHandler)
+	http.HandleFunc("/", notFoundHandler)
 
 	s := http.Server{
 		Addr:    addr,
@@ -22,6 +23,12 @@ func serve(addr string) (func(context.Context) error, error) {
 	go s.ListenAndServe()
 
 	return s.Shutdown, nil
+}
+
+func notFoundHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Not found:", r.URL.String())
+
+	http.NotFound(w, r)
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
